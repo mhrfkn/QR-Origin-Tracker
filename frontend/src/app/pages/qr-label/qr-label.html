@@ -1,0 +1,37 @@
+<section class="label">
+  <p><a routerLink="/batches" class="back-link">← Back to batches</a></p>
+
+  <div class="label-header">
+    <h1>📦 Crate Label</h1>
+    <p class="label-hint">Print this page and tape the code to the crate.<br>Scanning the QR opens the public origin story.</p>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (qrUrl()) {
+    <div class="qr-wrapper">
+      <img [src]="qrUrl()" alt="Batch tracking QR code" />
+    </div>
+  } @else if (!error()) {
+    <div class="qr-skeleton">
+      <div class="qr-skeleton-inner"></div>
+    </div>
+  }
+
+  <div class="label-meta">
+    @if (batch(); as b) {
+      <p class="batch-name">{{ b.cropName }}{{ b.variety ? ' · ' + b.variety : '' }}</p>
+      <p class="batch-qty">{{ b.quantityKg }} kg &nbsp;·&nbsp; Harvested {{ b.harvestDate }}</p>
+    }
+    <p class="batch-id">ID: {{ batchId }}</p>
+    @if (batch(); as b) {
+      <p class="batch-url">🔗 {{ b.trackingUrl }}</p>
+    }
+  </div>
+
+  <div class="label-actions">
+    <button class="btn" onclick="window.print()">🖨️ Print Label</button>
+  </div>
+</section>

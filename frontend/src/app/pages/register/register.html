@@ -1,0 +1,15 @@
+<section class="card">
+  <h1>Register your farm</h1>
+  <form (ngSubmit)="submit()">
+    <label>Your name <input name="name" [(ngModel)]="name" required /></label>
+    <label>Email <input name="email" type="email" [(ngModel)]="email" required /></label>
+    <label>Password <input name="password" type="password" minlength="8" [(ngModel)]="password" required /></label>
+    <label>Farm name <input name="farmName" [(ngModel)]="farmName" required /></label>
+    <label>Farm location <input name="farmLocation" [(ngModel)]="farmLocation" required /></label>
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+    <button class="btn" type="submit" [disabled]="busy()">Create account</button>
+  </form>
+  <p class="hint">Already registered? <a routerLink="/login">Log in</a></p>
+</section>

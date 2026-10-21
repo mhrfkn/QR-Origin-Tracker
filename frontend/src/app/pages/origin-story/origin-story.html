@@ -1,0 +1,86 @@
+<div class="os-page">
+
+  @if (loading()) {
+    <div class="os-loading" aria-live="polite">
+      <div class="os-spinner"></div>
+      <p>Looking up this harvest…</p>
+    </div>
+  } @else if (error()) {
+    <div class="os-error" role="alert">
+      <div class="os-error-icon">🌿</div>
+      <h1>Batch Not Found</h1>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (origin(); as batch) {
+
+    <!-- Hero Banner -->
+    <div class="os-hero">
+      <div class="os-hero-bg"></div>
+      <div class="os-hero-content">
+        <span class="os-badge" [class.os-badge--organic]="batch.organic">
+          {{ batch.organic ? '🌱 Certified Organic' : '🌾 Field Harvest' }}
+        </span>
+        <h1 class="os-crop-name">{{ batch.cropName }}</h1>
+        @if (batch.variety) {
+          <p class="os-variety">{{ batch.variety }}</p>
+        }
+      </div>
+      <div class="os-hero-wave">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="#f6f1e6"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="os-body">
+
+      <!-- Stats Grid -->
+      <div class="os-stats-grid">
+        <div class="os-stat-card">
+          <span class="os-stat-icon">📅</span>
+          <span class="os-stat-label">Harvested</span>
+          <span class="os-stat-value">{{ batch.harvestDate | date: 'd MMM y' }}</span>
+        </div>
+        <div class="os-stat-card">
+          <span class="os-stat-icon">⚖️</span>
+          <span class="os-stat-label">Batch Size</span>
+          <span class="os-stat-value">{{ batch.quantityKg }} kg</span>
+        </div>
+        <div class="os-stat-card os-stat-card--wide">
+          <span class="os-stat-icon">📍</span>
+          <span class="os-stat-label">Grown in</span>
+          <span class="os-stat-value">{{ batch.farmLocation }}</span>
+        </div>
+      </div>
+
+      <!-- Farm Card -->
+      <div class="os-farm-card">
+        <div class="os-farm-avatar">
+          <span>🌾</span>
+        </div>
+        <div class="os-farm-info">
+          <p class="os-farm-label">Produced by</p>
+          <p class="os-farm-name">{{ batch.farmName }}</p>
+          <p class="os-farm-person">{{ batch.producerName }}</p>
+        </div>
+      </div>
+
+      <!-- Origin Story -->
+      <div class="os-story-card">
+        <div class="os-story-header">
+          <span class="os-story-leaf">🌿</span>
+          <h2>The Origin Story</h2>
+        </div>
+        <p class="os-story-text">{{ batch.originStory }}</p>
+      </div>
+
+      <!-- Footer -->
+      <div class="os-footer">
+        <p>🔍 Verified batch — scan the QR code on any crate to trace its journey</p>
+      </div>
+
+    </div>
+  }
+
+</div>

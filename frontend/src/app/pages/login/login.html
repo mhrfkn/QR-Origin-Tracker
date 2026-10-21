@@ -1,0 +1,19 @@
+<section class="card">
+  <h1>Producer login</h1>
+  <p>Demo account is prefilled: <code>producer@harvest.local</code> / <code>harvest123</code></p>
+  <form (ngSubmit)="submit()">
+    <label>
+      Email
+      <input name="email" type="email" [(ngModel)]="email" required />
+    </label>
+    <label>
+      Password
+      <input name="password" type="password" [(ngModel)]="password" required />
+    </label>
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+    <button class="btn" type="submit" [disabled]="busy()">Sign in</button>
+  </form>
+  <p class="hint">New farm? <a routerLink="/register">Register</a></p>
+</section>

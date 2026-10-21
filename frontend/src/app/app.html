@@ -1,0 +1,18 @@
+@if (!isPublicTrack()) {
+  <header class="site-header">
+    <a routerLink="/" class="brand">Origin Tracker</a>
+    <nav>
+      @if (auth.isLoggedIn()) {
+        <a routerLink="/batches" routerLinkActive="active">My batches</a>
+        <span class="who">{{ auth.user()?.farmName }}</span>
+        <button type="button" class="text-btn" (click)="auth.logout()">Log out</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active">Producer login</a>
+        <a routerLink="/register" class="cta" routerLinkActive="active">Register farm</a>
+      }
+    </nav>
+  </header>
+}
+<main [class.track-main]="isPublicTrack()">
+  <router-outlet />
+</main>

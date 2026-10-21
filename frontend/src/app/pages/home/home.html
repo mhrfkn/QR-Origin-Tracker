@@ -1,0 +1,29 @@
+<section class="hero">
+  <p class="eyebrow">Traceability slice</p>
+  <h1>A crate in the field.<br />A story on the phone.</h1>
+  <p class="lede">
+    Register a harvest batch, print a QR code, and let anyone scan it to see where the crop came from.
+  </p>
+  <div class="actions">
+    <a routerLink="/register" class="btn">Start as a producer</a>
+    <a routerLink="/login" class="btn ghost">I already have a farm account</a>
+  </div>
+</section>
+
+<section class="steps">
+  <article>
+    <span>1</span>
+    <h2>Register the batch</h2>
+    <p>Capture crop, weight, harvest date, and a short origin story. The API assigns a UUID.</p>
+  </article>
+  <article>
+    <span>2</span>
+    <h2>Print the QR</h2>
+    <p>The backend encodes the public tracking URL. Tape it to a crate.</p>
+  </article>
+  <article>
+    <span>3</span>
+    <h2>Scan on a phone</h2>
+    <p>The route <code>/track/:batchId</code> loads the public origin page — no login required.</p>
+  </article>
+</section>

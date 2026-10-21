@@ -1,0 +1,14 @@
+# Railway deployment configuration for QR Origin Tracker
+# Docs: https://docs.railway.com/reference/config-as-code
+
+[build]
+# Build the fat JAR (includes Angular via frontend-maven-plugin)
+builder = "nixpacks"
+buildCommand = "cd backend && ./mvnw -B package -DskipTests"
+
+[deploy]
+# Run the packaged JAR; Railway injects PORT automatically
+startCommand = "java -jar backend/target/origin-tracker-0.0.1-SNAPSHOT.jar --spring.profiles.active=railway"
+healthcheckPath = "/api/public/health"
+healthcheckTimeout = 120
+restartPolicyType = "on_failure"

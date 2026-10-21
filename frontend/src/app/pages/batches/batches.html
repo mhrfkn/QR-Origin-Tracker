@@ -1,0 +1,37 @@
+<section class="layout">
+  <form class="card" (ngSubmit)="submit()">
+    <h1>Register a harvest batch</h1>
+    <label>Crop <input name="cropName" [(ngModel)]="cropName" required /></label>
+    <label>Variety <input name="variety" [(ngModel)]="variety" /></label>
+    <label>Quantity (kg) <input name="quantityKg" type="number" min="0.01" step="0.01" [(ngModel)]="quantityKg" required /></label>
+    <label>Harvest date <input name="harvestDate" type="date" [(ngModel)]="harvestDate" required /></label>
+    <label class="check">
+      <input name="organic" type="checkbox" [(ngModel)]="organic" />
+      Organic
+    </label>
+    <label>
+      Origin story
+      <textarea name="originStory" rows="5" [(ngModel)]="originStory" required maxlength="2000"></textarea>
+    </label>
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+    <button class="btn" type="submit" [disabled]="busy()">Generate tracking UUID + QR</button>
+  </form>
+
+  <div>
+    <h2>Your batches</h2>
+    @if (batches().length === 0) {
+      <p class="muted">No batches yet. Register one to get a QR label.</p>
+    }
+    <ul>
+      @for (batch of batches(); track batch.id) {
+        <li>
+          <strong>{{ batch.cropName }}</strong>
+          <span>{{ batch.quantityKg }} kg · {{ batch.harvestDate }}</span>
+          <a [routerLink]="['/batches', batch.id]">Print QR</a>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
