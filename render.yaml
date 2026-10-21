@@ -1,15 +1,14 @@
 services:
-  # ── Web Service (Spring Boot + Angular bundled) ───────────────────────────
+  # ── Web Service (Spring Boot + Angular via Docker) ────────────────────────
   - type: web
     name: qr-origin-tracker
-    runtime: java
+    runtime: docker
     plan: free
-    buildCommand: cd backend && ./mvnw -B package -DskipTests
-    startCommand: java -jar backend/target/origin-tracker-0.0.1-SNAPSHOT.jar --spring.profiles.active=render
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /api/public/health
     envVars:
       - key: APP_JWT_SECRET
-        generateValue: true          # Render generates a random secret automatically
+        generateValue: true
       - key: APP_URL
         value: https://qr-origin-tracker.onrender.com   # update after first deploy
       - key: DATABASE_URL
@@ -25,7 +24,7 @@ services:
           name: qr-origin-tracker-db
           property: password
 
-  # ── PostgreSQL Database ────────────────────────────────────────────────────
+# ── PostgreSQL Database ────────────────────────────────────────────────────
 databases:
   - name: qr-origin-tracker-db
     plan: free
