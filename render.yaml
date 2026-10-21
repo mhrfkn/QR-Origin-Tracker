@@ -11,10 +11,18 @@ services:
         generateValue: true
       - key: APP_URL
         value: https://qr-origin-tracker.onrender.com   # update after first deploy
-      - key: DATABASE_URL
+      - key: PGHOST
         fromDatabase:
           name: qr-origin-tracker-db
-          property: connectionString
+          property: host
+      - key: PGPORT
+        fromDatabase:
+          name: qr-origin-tracker-db
+          property: port
+      - key: PGDATABASE
+        fromDatabase:
+          name: qr-origin-tracker-db
+          property: database
       - key: PGUSER
         fromDatabase:
           name: qr-origin-tracker-db
