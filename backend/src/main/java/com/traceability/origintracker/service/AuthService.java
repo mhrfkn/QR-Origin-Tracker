@@ -34,7 +34,7 @@ public class AuthService {
         if (producerRepository.existsByEmailIgnoreCase(request.email())) {
             // Return generic message to prevent user enumeration
             // (an attacker should not be able to discover which emails are registered)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registration failed. Please check your details.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "An account with this email already exists.");
         }
         Producer producer = new Producer();
         producer.setName(request.name().trim());

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BatchSummary, PublicOrigin } from './models';
+import { BatchSummary, PublicOrigin, ScanAnalytics } from './models';
 import { apiBase } from './api-base';
 
 @Injectable({ providedIn: 'root' })
@@ -45,5 +45,9 @@ export class BatchService {
 
   publicOrigin(batchId: string) {
     return this.http.get<PublicOrigin>(`${apiBase()}/api/public/batches/${batchId}`);
+  }
+
+  getAnalytics(batchId: string) {
+    return this.http.get<ScanAnalytics>(`${apiBase()}/api/batches/${batchId}/analytics`);
   }
 }

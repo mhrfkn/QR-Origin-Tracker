@@ -28,3 +28,11 @@ export interface PublicOrigin {
   producerName: string;
   grownIn: string;
 }
+
+export interface ScanAnalytics {
+  batchId: string;
+  cropName: string;
+  totalScans: number;
+  topCountries: { country: string; count: number }[];
+  hourlySeries: { hour: string; count: number }[];
+}

@@ -3,10 +3,12 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { BatchService } from '../../core/batch.service';
 import { PublicOrigin } from '../../core/models';
+import { MapComponent } from '../../core/map.component';
+import { FreshnessIndicatorComponent } from '../../core/freshness-indicator.component';
 
 @Component({
   selector: 'app-origin-story',
-  imports: [DatePipe],
+  imports: [DatePipe, MapComponent, FreshnessIndicatorComponent],
   templateUrl: './origin-story.html',
   styleUrl: './origin-story.css'
 })

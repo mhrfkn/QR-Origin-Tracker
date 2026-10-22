@@ -248,6 +248,35 @@
   margin: 0;
 }
 
+/* ─── Map Card ──────────────────────────────────────────────────────── */
+.os-map-card {
+  background: #fff;
+  border: 1px solid #e4dccb;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.os-map-header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.9rem 1.1rem 0.75rem;
+  border-bottom: 1px solid #f0ebe0;
+}
+
+.os-map-icon {
+  font-size: 1.2rem;
+}
+
+.os-map-header h2 {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f241c;
+  margin: 0;
+}
+
 /* ─── Story Card ────────────────────────────────────────────────────── */
 .os-story-card {
   background: linear-gradient(135deg, #1f2a1d, #2c3d28);

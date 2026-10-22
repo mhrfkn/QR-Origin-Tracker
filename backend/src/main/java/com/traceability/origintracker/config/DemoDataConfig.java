@@ -39,7 +39,8 @@ public class DemoDataConfig {
                     new BigDecimal("50.00"),
                     LocalDate.now().minusDays(1),
                     true,
-                    "Picked at sunrise from open-field beds watered with drip irrigation. No synthetic pesticides. Packed the same morning so the crate you scan is still close to the soil it came from."
+                    "Picked at sunrise from open-field beds watered with drip irrigation. No synthetic pesticides. Packed the same morning so the crate you scan is still close to the soil it came from.",
+                    "Nashik, Maharashtra"
             ));
         };
     }

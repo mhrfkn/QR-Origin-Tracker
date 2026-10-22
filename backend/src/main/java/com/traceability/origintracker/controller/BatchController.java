@@ -2,9 +2,11 @@ package com.traceability.origintracker.controller;
 
 import com.traceability.origintracker.dto.BatchSummaryResponse;
 import com.traceability.origintracker.dto.CreateBatchRequest;
+import com.traceability.origintracker.dto.ScanAnalyticsResponse;
 import com.traceability.origintracker.dto.UpdateBatchRequest;
 import com.traceability.origintracker.service.BatchService;
 import com.traceability.origintracker.service.QrCodeService;
+import com.traceability.origintracker.service.ScanService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,10 +30,12 @@ public class BatchController {
 
     private final BatchService batchService;
     private final QrCodeService qrCodeService;
+    private final ScanService scanService;
 
-    public BatchController(BatchService batchService, QrCodeService qrCodeService) {
+    public BatchController(BatchService batchService, QrCodeService qrCodeService, ScanService scanService) {
         this.batchService = batchService;
         this.qrCodeService = qrCodeService;
+        this.scanService = scanService;
     }
 
     @PostMapping
@@ -62,5 +66,12 @@ public class BatchController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(Authentication authentication, @PathVariable UUID batchId) {
         batchService.delete(authentication.getName(), batchId);
+    }
+
+    @GetMapping("/{batchId}/analytics")
+    public ScanAnalyticsResponse analytics(Authentication authentication, @PathVariable UUID batchId) {
+        // Verify the authenticated producer owns this batch before exposing analytics
+        batchService.requireOwned(authentication.getName(), batchId);
+        return scanService.getAnalytics(batchId);
     }
 }

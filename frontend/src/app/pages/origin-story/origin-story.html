@@ -54,6 +54,11 @@
         </div>
       </div>
 
+      <!-- Freshness Indicator -->
+      <app-freshness-indicator
+        [cropName]="batch.cropName"
+        [harvestDate]="batch.harvestDate" />
+
       <!-- Farm Card -->
       <div class="os-farm-card">
         <div class="os-farm-avatar">
@@ -64,6 +69,15 @@
           <p class="os-farm-name">{{ batch.farmName }}</p>
           <p class="os-farm-person">{{ batch.producerName }}</p>
         </div>
+      </div>
+
+      <!-- Farm Map -->
+      <div class="os-map-card">
+        <div class="os-map-header">
+          <span class="os-map-icon">🗺️</span>
+          <h2>Where It Was Grown</h2>
+        </div>
+        <app-map [location]="batch.grownIn || batch.farmLocation" />
       </div>
 
       <!-- Origin Story -->

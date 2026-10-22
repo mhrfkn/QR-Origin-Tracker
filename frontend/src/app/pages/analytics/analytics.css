@@ -1,0 +1,307 @@
+/* ── Shell layout ───────────────────────────────────────────────────────────── */
+.analytics-shell {
+  width: min(920px, calc(100% - 2.5rem));
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* ── Back link ──────────────────────────────────────────────────────────────── */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s;
+  width: fit-content;
+}
+.back-link:hover { color: var(--ink); }
+
+/* ── Page header ────────────────────────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-meta {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.badge-crop {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: rgba(21, 128, 61, 0.12);
+  color: var(--leaf);
+  border: 1px solid rgba(21, 128, 61, 0.25);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  width: fit-content;
+}
+
+.page-title {
+  font-family: var(--serif);
+  font-size: 1.85rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.page-sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── KPI row ────────────────────────────────────────────────────────────────── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.kpi-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.4rem 1.5rem;
+  display: grid;
+  gap: 0.2rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: kpi-in 0.5s ease both;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+#kpi-total { animation-delay: 0ms; }
+#kpi-countries { animation-delay: 80ms; }
+#kpi-period { animation-delay: 160ms; }
+
+@keyframes kpi-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.kpi-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.kpi-value {
+  font-size: 2.4rem;
+  font-weight: 800;
+  font-family: var(--serif);
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Chart cards ────────────────────────────────────────────────────────────── */
+.chart-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  animation: kpi-in 0.5s ease 0.2s both;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.chart-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ink);
+}
+
+.chart-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--leaf);
+  background: rgba(21, 128, 61, 0.1);
+  border: 1px solid rgba(21, 128, 61, 0.2);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+}
+
+/* ── Timeline canvas ────────────────────────────────────────────────────────── */
+.canvas-wrap {
+  width: 100%;
+  height: 220px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f1a14 0%, #101c12 100%);
+}
+
+.timeline-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── Country bars ───────────────────────────────────────────────────────────── */
+.country-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.country-row {
+  display: grid;
+  gap: 0.3rem;
+  animation: kpi-in 0.4s ease both;
+}
+
+.country-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flag {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.country-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  flex: 1;
+  color: var(--ink);
+}
+
+.country-count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  min-width: 2rem;
+  text-align: right;
+}
+
+.bar-track {
+  height: 8px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--leaf), #34d399);
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 100%;
+}
+
+/* ── Empty states ───────────────────────────────────────────────────────────── */
+.empty-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2.5rem 1rem;
+  color: var(--muted);
+  text-align: center;
+  background: var(--bg);
+  border-radius: 0.75rem;
+  border: 1.5px dashed var(--line);
+}
+
+.empty-chart span {
+  font-size: 2rem;
+}
+
+.empty-chart p {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Loading / error states ─────────────────────────────────────────────────── */
+.state-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 4rem 1rem;
+  color: var(--muted);
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--line);
+  border-top-color: var(--leaf);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-icon {
+  font-size: 2.5rem;
+  color: var(--tomato);
+}
+
+.error-msg {
+  font-size: 0.95rem;
+  color: var(--tomato);
+  text-align: center;
+}
+
+.muted { color: var(--muted); }
+
+.btn-back {
+  background: var(--leaf);
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+.btn-back:hover { background: var(--leaf-h); }

@@ -25,6 +25,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/qr-label/qr-label').then((m) => m.QrLabel)
   },
   {
+    path: 'batches/:batchId/analytics',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/analytics/analytics').then((m) => m.Analytics)
+  },
+  {
     path: 'track/:batchId',
     loadComponent: () => import('./pages/origin-story/origin-story').then((m) => m.OriginStory)
   },

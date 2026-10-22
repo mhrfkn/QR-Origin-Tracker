@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<ng-template>
+  <!-- Page is loaded as a routed component — no wrapper needed -->
+</ng-template>
+
+<div class="analytics-shell">
+
+  <!-- ── Back nav ──────────────────────────────────────────────────────────── -->
+  <a class="back-link" [routerLink]="'/batches'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Back to Batches
+  </a>
+
+  <!-- ── Loading ───────────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="state-center">
+      <div class="spinner"></div>
+      <p class="muted">Loading analytics…</p>
+    </div>
+  }
+
+  <!-- ── Error ─────────────────────────────────────────────────────────────── -->
+  @if (error()) {
+    <div class="state-center">
+      <div class="error-icon">⚠</div>
+      <p class="error-msg">{{ error() }}</p>
+      <a [routerLink]="'/batches'" class="btn-back">Go back</a>
+    </div>
+  }
+
+  <!-- ── Content ───────────────────────────────────────────────────────────── -->
+  @if (!loading() && !error() && analytics(); as data) {
+
+    <!-- Hero header -->
+    <div class="page-header">
+      <div class="header-meta">
+        <span class="badge-crop">📦 {{ data.cropName }}</span>
+        <h1 class="page-title">Scan Analytics</h1>
+        <p class="page-sub">Consumer engagement insights for this batch</p>
+      </div>
+    </div>
+
+    <!-- ── KPI row ──────────────────────────────────────────────────────────── -->
+    <div class="kpi-row">
+      <div class="kpi-card" id="kpi-total">
+        <div class="kpi-icon">📡</div>
+        <div class="kpi-value">{{ data.totalScans }}</div>
+        <div class="kpi-label">Total Scans</div>
+      </div>
+      <div class="kpi-card" id="kpi-countries">
+        <div class="kpi-icon">🌍</div>
+        <div class="kpi-value">{{ data.topCountries.length }}</div>
+        <div class="kpi-label">Countries Reached</div>
+      </div>
+      <div class="kpi-card" id="kpi-period">
+        <div class="kpi-icon">📅</div>
+        <div class="kpi-value">{{ data.hourlySeries.length }}</div>
+        <div class="kpi-label">Active Hours (7 days)</div>
+      </div>
+    </div>
+
+    <!-- ── Timeline chart ───────────────────────────────────────────────────── -->
+    <section class="chart-card" id="section-timeline">
+      <div class="chart-header">
+        <h2 class="chart-title">Scan Activity — Last 7 Days</h2>
+        <span class="chart-badge">Hourly</span>
+      </div>
+      @if (data.hourlySeries.length > 0) {
+        <div class="canvas-wrap">
+          <canvas #timelineCanvas class="timeline-canvas" aria-label="Hourly scan activity chart"></canvas>
+        </div>
+      } @else {
+        <div class="empty-chart">
+          <span>📊</span>
+          <p>No scans recorded in the last 7 days yet.<br>Share your QR code to start collecting data!</p>
+        </div>
+      }
+    </section>
+
+    <!-- ── Country breakdown ────────────────────────────────────────────────── -->
+    <section class="chart-card" id="section-countries">
+      <div class="chart-header">
+        <h2 class="chart-title">Top Countries</h2>
+        <span class="chart-badge">Geo</span>
+      </div>
+      @if (data.topCountries.length > 0) {
+        <div class="country-list">
+          @for (item of data.topCountries.slice(0, 10); track item.country; let i = $index) {
+            <div class="country-row" [style.animation-delay]="i * 60 + 'ms'">
+              <div class="country-info">
+                <span class="flag">{{ countryFlag(item.country) }}</span>
+                <span class="country-name">{{ item.country }}</span>
+                <span class="country-count">{{ item.count }}</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width]="barWidth(item.count)"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-chart">
+          <span>🌐</span>
+          <p>No geolocation data yet. Country data appears after the first scan from a public IP.</p>
+        </div>
+      }
+    </section>
+
+  }
+
+</div>
