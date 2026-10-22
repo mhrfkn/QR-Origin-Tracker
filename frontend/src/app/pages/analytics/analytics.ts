@@ -1,12 +1,11 @@
-import { Component, OnInit, inject, signal, ElementRef, ViewChild, AfterViewInit, effect } from '@angular/core';
+import { Component, OnInit, inject, signal, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { BatchService } from '../../core/batch.service';
 import { ScanAnalytics } from '../../core/models';
 
 @Component({
   selector: 'app-analytics',
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink],
   templateUrl: './analytics.html',
   styleUrl: './analytics.css'
 })
