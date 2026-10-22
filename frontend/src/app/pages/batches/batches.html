@@ -32,6 +32,7 @@
           <span>{{ batch.quantityKg }} kg · {{ batch.harvestDate }}</span>
           <div class="batch-actions">
             <a class="btn-sm btn-outline" [routerLink]="['/batches', batch.id]">Print QR</a>
+            <a class="btn-sm btn-analytics" [routerLink]="['/batches', batch.id, 'analytics']">📊 Analytics</a>
             <button class="btn-sm btn-edit" type="button" (click)="openEdit(batch)">Edit</button>
             <button class="btn-sm btn-danger" type="button" (click)="openDelete(batch)">Delete</button>
           </div>

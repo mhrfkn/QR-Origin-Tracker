@@ -123,6 +123,12 @@ span {
   color: #fff;
 }
 
+.btn-analytics {
+  background: #0d9488;
+  color: #fff;
+  text-decoration: none;
+}
+
 .btn-danger {
   background: var(--tomato, #dc2626);
   color: #fff;
