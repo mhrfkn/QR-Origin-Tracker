@@ -1,11 +1,13 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
   OnChanges,
   OnDestroy,
   ViewChild,
+  inject,
 } from '@angular/core';
 import * as L from 'leaflet';
 
@@ -98,6 +100,7 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   private map?: L.Map;
   private coords?: [number, number];
+  private readonly cdr = inject(ChangeDetectorRef);
 
   ngAfterViewInit() {
     if (this.coords) {
@@ -126,9 +129,13 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
       const { lat, lon } = first;
       this.coords = [parseFloat(lat), parseFloat(lon)];
       this.geocoding = false;
-      // Wait one tick for @if to render the map div
+      // Force Angular to render the #mapEl div that @if just toggled on,
+      // then init the map on the next microtask so the DOM is fully painted.
+      this.cdr.detectChanges();
       setTimeout(() => {
-        if (this.mapEl) this.initMap(this.coords!);
+        if (this.mapEl) {
+          this.initMap(this.coords!);
+        }
       }, 0);
     } catch {
       this.geocoding = false;
@@ -154,6 +161,9 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
       .addTo(this.map)
       .bindPopup(`<strong>📍 ${this.location}</strong>`, { closeButton: false })
       .openPopup();
+
+    // Recalculate size in case the container was hidden/zero-sized during init
+    setTimeout(() => this.map?.invalidateSize(), 100);
   }
 
   private resetMap() {
