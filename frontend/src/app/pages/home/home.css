@@ -1,53 +1,90 @@
 .hero {
-  padding: 2rem 0 2.5rem;
+  padding: 4rem 0 3.5rem;
 }
 
 .eyebrow {
-  letter-spacing: 0.16em;
+  display: inline-block;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
   color: var(--leaf);
-  margin: 0 0 0.75rem;
+  background: rgba(21, 128, 61, 0.08);
+  border: 1px solid rgba(21, 128, 61, 0.18);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  margin: 0 0 1.25rem;
 }
 
 h1 {
   font-family: var(--serif);
-  font-size: clamp(2.1rem, 6vw, 3.4rem);
-  line-height: 1.1;
-  margin: 0 0 1rem;
+  font-size: clamp(2.4rem, 7vw, 3.8rem);
+  line-height: 1.08;
+  margin: 0 0 1.25rem;
+  max-width: 20ch;
 }
 
 .lede {
-  max-width: 38rem;
+  max-width: 40rem;
   color: var(--muted);
   font-size: 1.1rem;
+  line-height: 1.7;
+  margin: 0;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
+/* ── How it works ─────────────────────────────────────────────────────────── */
 .steps {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 1rem;
 }
 
 .steps article {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 1rem;
-  padding: 1.1rem;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 
-.steps span {
+.steps article:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.steps .step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(21, 128, 61, 0.1);
+  color: var(--leaf);
   font-family: var(--serif);
-  color: var(--tomato);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.9rem;
 }
 
-code {
-  font-size: 0.85em;
+.steps h2 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  margin: 0 0 0.5rem;
+}
+
+.steps p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
 }

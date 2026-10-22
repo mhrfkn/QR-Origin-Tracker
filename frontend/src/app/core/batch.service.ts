@@ -22,6 +22,21 @@ export class BatchService {
     return this.http.post<BatchSummary>(`${apiBase()}/api/batches`, payload);
   }
 
+  update(batchId: string, payload: {
+    cropName: string;
+    variety: string;
+    quantityKg: number;
+    harvestDate: string;
+    organic: boolean;
+    originStory: string;
+  }) {
+    return this.http.put<BatchSummary>(`${apiBase()}/api/batches/${batchId}`, payload);
+  }
+
+  delete(batchId: string) {
+    return this.http.delete(`${apiBase()}/api/batches/${batchId}`);
+  }
+
   qrPng(batchId: string) {
     return this.http.get(`${apiBase()}/api/batches/${batchId}/qr`, { responseType: 'blob' });
   }

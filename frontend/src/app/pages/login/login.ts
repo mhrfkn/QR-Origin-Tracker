@@ -13,8 +13,8 @@ export class Login {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
-  email = 'producer@harvest.local';
-  password = 'harvest123';
+  email = '';
+  password = '';
   readonly error = signal('');
   readonly busy = signal(false);
 

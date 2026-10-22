@@ -29,9 +29,74 @@
         <li>
           <strong>{{ batch.cropName }}</strong>
           <span>{{ batch.quantityKg }} kg · {{ batch.harvestDate }}</span>
-          <a [routerLink]="['/batches', batch.id]">Print QR</a>
+          <div class="batch-actions">
+            <a class="btn-sm btn-outline" [routerLink]="['/batches', batch.id]">Print QR</a>
+            <button class="btn-sm btn-edit" type="button" (click)="openEdit(batch)">Edit</button>
+            <button class="btn-sm btn-danger" type="button" (click)="openDelete(batch)">Delete</button>
+          </div>
         </li>
       }
     </ul>
   </div>
 </section>
+
+<!-- ── Edit Modal ──────────────────────────────────────────────────────── -->
+@if (editingBatch()) {
+  <div class="modal-backdrop" (click)="closeEdit()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Edit batch</h3>
+        <button class="close-btn" type="button" (click)="closeEdit()" aria-label="Close">✕</button>
+      </div>
+      <form class="modal-form" (ngSubmit)="saveEdit()">
+        <label>Crop <input name="editCropName" [(ngModel)]="editCropName" required /></label>
+        <label>Variety <input name="editVariety" [(ngModel)]="editVariety" /></label>
+        <label>Quantity (kg) <input name="editQuantityKg" type="number" min="0.01" step="0.01" [(ngModel)]="editQuantityKg" required /></label>
+        <label>Harvest date <input name="editHarvestDate" type="date" [(ngModel)]="editHarvestDate" required /></label>
+        <label class="check">
+          <input name="editOrganic" type="checkbox" [(ngModel)]="editOrganic" />
+          Organic
+        </label>
+        <label>
+          Origin story
+          <textarea name="editOriginStory" rows="4" [(ngModel)]="editOriginStory" required maxlength="2000" placeholder="Update origin story…"></textarea>
+        </label>
+        @if (editError()) {
+          <p class="error">{{ editError() }}</p>
+        }
+        <div class="modal-footer">
+          <button class="btn-sm btn-outline" type="button" (click)="closeEdit()">Cancel</button>
+          <button class="btn btn-save" type="submit" [disabled]="editBusy()">
+            {{ editBusy() ? 'Saving…' : 'Save changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- ── Delete Confirm Modal ───────────────────────────────────────────── -->
+@if (deletingBatch()) {
+  <div class="modal-backdrop" (click)="closeDelete()">
+    <div class="modal-card modal-card--sm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Delete batch?</h3>
+        <button class="close-btn" type="button" (click)="closeDelete()" aria-label="Close">✕</button>
+      </div>
+      <p class="modal-body-text">
+        Are you sure you want to permanently delete
+        <strong>{{ deletingBatch()!.cropName }}</strong>?
+        This action cannot be undone.
+      </p>
+      @if (deleteError()) {
+        <p class="error">{{ deleteError() }}</p>
+      }
+      <div class="modal-footer">
+        <button class="btn-sm btn-outline" type="button" (click)="closeDelete()">Cancel</button>
+        <button class="btn-sm btn-danger" type="button" (click)="confirmDelete()" [disabled]="deleteBusy()">
+          {{ deleteBusy() ? 'Deleting…' : 'Yes, delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

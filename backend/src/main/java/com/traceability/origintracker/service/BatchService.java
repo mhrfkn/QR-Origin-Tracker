@@ -3,6 +3,7 @@ package com.traceability.origintracker.service;
 import com.traceability.origintracker.dto.BatchSummaryResponse;
 import com.traceability.origintracker.dto.CreateBatchRequest;
 import com.traceability.origintracker.dto.PublicOriginResponse;
+import com.traceability.origintracker.dto.UpdateBatchRequest;
 import com.traceability.origintracker.entity.CropBatch;
 import com.traceability.origintracker.entity.Producer;
 import com.traceability.origintracker.repository.CropBatchRepository;
@@ -84,6 +85,25 @@ public class BatchService {
                 producer.getFarmLocation(),
                 producer.getName()
         );
+    }
+
+    @Transactional
+    public BatchSummaryResponse update(String producerEmail, UUID batchId, UpdateBatchRequest request) {
+        CropBatch batch = requireOwned(producerEmail, batchId);
+        batch.setCropName(request.cropName().trim());
+        batch.setVariety(blankToNull(request.variety()));
+        batch.setQuantityKg(request.quantityKg());
+        batch.setHarvestDate(request.harvestDate());
+        batch.setOrganic(request.organic());
+        batch.setOriginStory(request.originStory().trim());
+        cropBatchRepository.save(batch);
+        return toSummary(batch);
+    }
+
+    @Transactional
+    public void delete(String producerEmail, UUID batchId) {
+        CropBatch batch = requireOwned(producerEmail, batchId);
+        cropBatchRepository.delete(batch);
     }
 
     public String trackingUrl(UUID batchId) {

@@ -1,39 +1,68 @@
 .card {
-  max-width: 32rem;
-  margin: 1rem auto;
+  max-width: 30rem;
+  margin: 3rem auto 0;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 1.1rem;
-  padding: 1.4rem;
+  border-radius: var(--radius-lg);
+  padding: 2rem 2rem 1.75rem;
+  box-shadow: var(--shadow-md);
 }
 
 h1 {
   font-family: var(--serif);
-  margin-top: 0;
+  font-size: 1.6rem;
+  margin: 0 0 1.5rem;
 }
 
 form {
   display: grid;
-  gap: 0.9rem;
+  gap: 1rem;
 }
 
 label {
   display: grid;
   gap: 0.35rem;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
 }
 
 input {
-  border: 1px solid var(--line);
-  border-radius: 0.6rem;
-  padding: 0.65rem 0.7rem;
-  font: inherit;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.85rem;
+  font: 400 0.95rem var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  width: 100%;
+}
+
+input:focus {
+  border-color: var(--leaf);
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
 }
 
 .hint {
   color: var(--muted);
+  font-size: 0.85rem;
+  margin: 1.25rem 0 0;
+  text-align: center;
 }
 
 .error {
   color: var(--tomato);
+  font-size: 0.875rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+}
+
+.btn {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.72rem;
+  font-size: 0.9rem;
 }

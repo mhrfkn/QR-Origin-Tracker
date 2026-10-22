@@ -1,51 +1,90 @@
+/* ── Site header ─────────────────────────────────────────────────────────── */
 .site-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem 1.25rem;
+  padding: 0 1.5rem;
+  height: 60px;
   border-bottom: 1px solid var(--line);
-  background: rgba(250, 247, 240, 0.92);
+  background: rgba(248, 250, 252, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 50;
 }
 
+/* ── Brand ───────────────────────────────────────────────────────────────── */
 .brand {
   font-family: var(--serif);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
   color: var(--ink);
   text-decoration: none;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
+.brand::before {
+  content: '⬡';
+  color: var(--leaf);
+  font-size: 1rem;
+  font-family: var(--sans);
+}
+
+/* ── Nav ─────────────────────────────────────────────────────────────────── */
 nav {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.25rem;
   flex-wrap: wrap;
 }
 
 nav a {
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  transition: color 0.15s, background 0.15s;
 }
 
-nav a.active,
 nav a:hover {
   color: var(--ink);
+  background: var(--line);
+  text-decoration: none;
+}
+
+nav a.active {
+  color: var(--ink);
+  font-weight: 600;
 }
 
 .cta {
-  background: var(--leaf);
+  background: var(--leaf) !important;
   color: #fff !important;
-  padding: 0.4rem 0.8rem;
+  padding: 0.4rem 0.9rem !important;
   border-radius: 999px;
+  font-weight: 600 !important;
+  font-size: 0.875rem;
+  transition: background 0.18s, transform 0.12s !important;
+}
+
+.cta:hover {
+  background: var(--leaf-h) !important;
+  transform: translateY(-1px);
+  text-decoration: none;
 }
 
 .who {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0 0.25rem;
 }
 
 .text-btn {
@@ -53,16 +92,25 @@ nav a:hover {
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  font: inherit;
+  font: 500 0.875rem var(--sans);
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  transition: color 0.15s, background 0.15s;
 }
 
+.text-btn:hover {
+  color: var(--tomato);
+  background: #fee2e2;
+}
+
+/* ── Main content area ───────────────────────────────────────────────────── */
 .track-main {
   padding: 0;
   max-width: none;
 }
 
 main:not(.track-main) {
-  width: min(960px, calc(100% - 2rem));
+  width: min(1000px, calc(100% - 2.5rem));
   margin: 0 auto;
-  padding: 1.5rem 0 3rem;
+  padding: 2rem 0 4rem;
 }
