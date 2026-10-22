@@ -89,6 +89,31 @@
         <p class="os-story-text">{{ batch.originStory }}</p>
       </div>
 
+      <!-- Contact Producer -->
+      @if (batch.contactEmail) {
+        <div class="os-contact-card">
+          <div class="os-contact-header">
+            <span class="os-contact-icon">✉️</span>
+            <h2>Contact the Producer</h2>
+          </div>
+          <p class="os-contact-desc">
+            Have a question about this harvest? Reach out to
+            <strong>{{ batch.producerName }}</strong> at <strong>{{ batch.farmName }}</strong> directly.
+          </p>
+          <a
+            class="os-contact-btn"
+            [href]="'mailto:' + batch.contactEmail +
+              '?subject=' + encodeSubject('Enquiry about ' + batch.cropName + ' — ' + batch.farmName) +
+              '&body=' + encodeBody(batch)"
+            id="contact-producer-link"
+          >
+            <span class="os-contact-btn-icon">✉️</span>
+            Email {{ batch.producerName }}
+          </a>
+          <p class="os-contact-email-hint">{{ batch.contactEmail }}</p>
+        </div>
+      }
+
       <!-- Footer -->
       <div class="os-footer">
         <p>🔍 Verified batch — scan the QR code on any crate to trace its journey</p>

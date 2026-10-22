@@ -15,6 +15,7 @@ public record PublicOriginResponse(
         String farmName,
         String farmLocation,
         String producerName,
-        String grownIn
+        String grownIn,
+        String contactEmail
 ) {
 }

@@ -27,6 +27,7 @@ export interface PublicOrigin {
   farmLocation: string;
   producerName: string;
   grownIn: string;
+  contactEmail: string;
 }
 
 export interface ScanAnalytics {

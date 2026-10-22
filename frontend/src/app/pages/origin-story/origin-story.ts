@@ -38,4 +38,23 @@ export class OriginStory implements OnInit {
       }
     });
   }
+
+  encodeSubject(text: string): string {
+    return encodeURIComponent(text);
+  }
+
+  encodeBody(batch: PublicOrigin): string {
+    const body = [
+      `Hi ${batch.producerName},`,
+      ``,
+      `I scanned the QR code on your ${batch.cropName}${batch.variety ? ` (${batch.variety})` : ''} from ${batch.farmName} and I have a question.`,
+      ``,
+      `[Please write your question here]`,
+      ``,
+      `—`,
+      `Batch ID: ${batch.batchId}`,
+      `Harvest date: ${batch.harvestDate}`,
+    ].join('\n');
+    return encodeURIComponent(body);
+  }
 }

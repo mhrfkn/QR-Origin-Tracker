@@ -85,7 +85,8 @@ public class BatchService {
                 producer.getFarmName(),
                 producer.getFarmLocation(),
                 producer.getName(),
-                batch.getGrownIn() != null ? batch.getGrownIn() : producer.getFarmLocation()
+                batch.getGrownIn() != null ? batch.getGrownIn() : producer.getFarmLocation(),
+                producer.getEmail()
         );
     }
 
