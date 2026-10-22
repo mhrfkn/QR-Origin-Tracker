@@ -18,6 +18,7 @@ export class BatchService {
     harvestDate: string;
     organic: boolean;
     originStory: string;
+    grownIn: string;
   }) {
     return this.http.post<BatchSummary>(`${apiBase()}/api/batches`, payload);
   }
@@ -29,6 +30,7 @@ export class BatchService {
     harvestDate: string;
     organic: boolean;
     originStory: string;
+    grownIn: string;
   }) {
     return this.http.put<BatchSummary>(`${apiBase()}/api/batches/${batchId}`, payload);
   }

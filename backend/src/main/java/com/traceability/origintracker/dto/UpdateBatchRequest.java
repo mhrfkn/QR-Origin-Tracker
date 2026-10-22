@@ -14,6 +14,7 @@ public record UpdateBatchRequest(
         @NotNull @DecimalMin("0.01") BigDecimal quantityKg,
         @NotNull LocalDate harvestDate,
         boolean organic,
-        @NotBlank @Size(max = 2000) String originStory
+        @NotBlank @Size(max = 2000) String originStory,
+        @Size(max = 200) String grownIn
 ) {
 }

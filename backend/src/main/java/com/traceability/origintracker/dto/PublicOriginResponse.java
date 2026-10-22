@@ -14,6 +14,7 @@ public record PublicOriginResponse(
         String originStory,
         String farmName,
         String farmLocation,
-        String producerName
+        String producerName,
+        String grownIn
 ) {
 }

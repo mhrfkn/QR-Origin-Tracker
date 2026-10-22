@@ -44,6 +44,7 @@ public class BatchService {
         batch.setHarvestDate(request.harvestDate());
         batch.setOrganic(request.organic());
         batch.setOriginStory(request.originStory().trim());
+        batch.setGrownIn(blankToNull(request.grownIn()));
         batch.setProducer(producer);
         cropBatchRepository.save(batch);
         return toSummary(batch);
@@ -83,7 +84,8 @@ public class BatchService {
                 batch.getOriginStory(),
                 producer.getFarmName(),
                 producer.getFarmLocation(),
-                producer.getName()
+                producer.getName(),
+                batch.getGrownIn() != null ? batch.getGrownIn() : producer.getFarmLocation()
         );
     }
 
@@ -96,6 +98,7 @@ public class BatchService {
         batch.setHarvestDate(request.harvestDate());
         batch.setOrganic(request.organic());
         batch.setOriginStory(request.originStory().trim());
+        batch.setGrownIn(blankToNull(request.grownIn()));
         cropBatchRepository.save(batch);
         return toSummary(batch);
     }

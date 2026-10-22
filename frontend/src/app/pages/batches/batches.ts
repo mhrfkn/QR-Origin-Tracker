@@ -20,6 +20,7 @@ export class Batches implements OnInit {
   harvestDate = new Date().toISOString().slice(0, 10);
   organic = true;
   originStory = '';
+  grownIn = '';
 
   // ── State ───────────────────────────────────────────────────────────────────
   readonly batches = signal<BatchSummary[]>([]);
@@ -34,6 +35,7 @@ export class Batches implements OnInit {
   editHarvestDate = '';
   editOrganic = false;
   editOriginStory = '';
+  editGrownIn = '';
   readonly editError = signal('');
   readonly editBusy = signal(false);
 
@@ -57,7 +59,8 @@ export class Batches implements OnInit {
         quantityKg: this.quantityKg,
         harvestDate: this.harvestDate,
         organic: this.organic,
-        originStory: this.originStory
+        originStory: this.originStory,
+        grownIn: this.grownIn
       })
       .subscribe({
         next: () => {
@@ -80,6 +83,7 @@ export class Batches implements OnInit {
     this.editHarvestDate = batch.harvestDate;
     this.editOrganic = batch.organic;
     this.editOriginStory = '';
+    this.editGrownIn = '';
     this.editError.set('');
     this.editingBatch.set(batch);
   }
@@ -100,7 +104,8 @@ export class Batches implements OnInit {
         quantityKg: this.editQuantityKg,
         harvestDate: this.editHarvestDate,
         organic: this.editOrganic,
-        originStory: this.editOriginStory
+        originStory: this.editOriginStory,
+        grownIn: this.editGrownIn
       })
       .subscribe({
         next: () => {

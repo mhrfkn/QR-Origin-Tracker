@@ -13,6 +13,7 @@
       Origin story
       <textarea name="originStory" rows="5" [(ngModel)]="originStory" required maxlength="2000"></textarea>
     </label>
+    <label>Grown in <input name="grownIn" [(ngModel)]="grownIn" placeholder="e.g. Nashik, Maharashtra" /></label>
     @if (error()) {
       <p class="error">{{ error() }}</p>
     }
@@ -61,6 +62,7 @@
           Origin story
           <textarea name="editOriginStory" rows="4" [(ngModel)]="editOriginStory" required maxlength="2000" placeholder="Update origin story…"></textarea>
         </label>
+        <label>Grown in <input name="editGrownIn" [(ngModel)]="editGrownIn" placeholder="e.g. Nashik, Maharashtra" /></label>
         @if (editError()) {
           <p class="error">{{ editError() }}</p>
         }

@@ -3,8 +3,8 @@
 :host {
   display: block;
   min-height: 100vh;
-  background: #f6f1e6;
-  color: #1f241c;
+  background: #f8fafc;
+  color: #111827;
   font-family: var(--sans);
 }
 

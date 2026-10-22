@@ -40,6 +40,9 @@ public class CropBatch {
     @Column(nullable = false, length = 2000)
     private String originStory;
 
+    @Column
+    private String grownIn;
+
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
@@ -97,6 +100,14 @@ public class CropBatch {
 
     public void setOriginStory(String originStory) {
         this.originStory = originStory;
+    }
+
+    public String getGrownIn() {
+        return grownIn;
+    }
+
+    public void setGrownIn(String grownIn) {
+        this.grownIn = grownIn;
     }
 
     public Instant getCreatedAt() {

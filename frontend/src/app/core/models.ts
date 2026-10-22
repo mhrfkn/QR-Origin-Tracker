@@ -26,4 +26,5 @@ export interface PublicOrigin {
   farmName: string;
   farmLocation: string;
   producerName: string;
+  grownIn: string;
 }
