@@ -88,6 +88,22 @@ export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
     canvas.height = H * dpr;
     ctx.scale(dpr, dpr);
 
+    // ── Zero-gap fill ──────────────────────────────────────────────────────────
+    // The backend only returns hours that had scans. Fill in every hourly slot
+    // between the first and last scan so the chart shows a proper time-series
+    // with valleys at zero instead of only the active hours.
+    const countMap = new Map(series.map(s => [s.hour, s.count]));
+    const startHour = new Date(series[0].hour);
+    const endHour   = new Date(series[series.length - 1].hour);
+    const filled: { hour: string; count: number }[] = [];
+    for (const t = new Date(startHour); t <= endHour; t.setHours(t.getHours() + 1)) {
+      const key = t.toISOString().slice(0, 13) + ':00:00.000Z';
+      filled.push({ hour: key, count: countMap.get(key) ?? 0 });
+    }
+    // Use the gap-filled series for all rendering below
+    series = filled;
+    // ──────────────────────────────────────────────────────────────────────────
+
     const padL = 48, padR = 20, padT = 16, padB = 40;
     const chartW = W - padL - padR;
     const chartH = H - padT - padB;
@@ -100,36 +116,38 @@ export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
     const maxVal = Math.max(...counts, 1);
     const n = series.length;
 
-    // ── Y-axis: smart tick count so labels are never duplicated ───────────────
-    // If maxVal is small (e.g. 2), fewer grid lines prevent duplicated integers.
-    const maxGridLines = Math.min(4, maxVal);
+    // ── Y-axis: integer ticks that never duplicate ─────────────────────────────
+    // Determine a nice step size so tick labels are always whole numbers.
+    const maxTicks = 4;
+    const tickStep = Math.ceil(maxVal / maxTicks); // always >= 1
+    const topTick = tickStep * Math.ceil(maxVal / tickStep); // round maxVal up to nearest step
+    // topTick is the axis ceiling (>= maxVal), used for scaling so the line never clips the top
+    const axisMax = topTick;
+
     ctx.strokeStyle = 'rgba(255,255,255,0.08)';
     ctx.lineWidth = 1;
-    const seenLabels = new Set<number>();
-    for (let i = 0; i <= maxGridLines; i++) {
-      const y = padT + chartH - (i / maxGridLines) * chartH;
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'right';
+
+    for (let tick = 0; tick <= axisMax; tick += tickStep) {
+      const y = padT + chartH - (tick / axisMax) * chartH;
       ctx.beginPath();
       ctx.moveTo(padL, y);
       ctx.lineTo(padL + chartW, y);
       ctx.stroke();
-
-      const labelVal = Math.round((i / maxGridLines) * maxVal);
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
-      ctx.font = '10px Inter, sans-serif';
-      ctx.textAlign = 'right';
-      // Only draw each integer label once
-      if (!seenLabels.has(labelVal)) {
-        seenLabels.add(labelVal);
-        ctx.fillText(String(labelVal), padL - 6, y + 3.5);
-      }
+      ctx.fillText(String(tick), padL - 6, y + 3.5);
     }
+
+    // Override maxVal used for Y-scaling to use axisMax (so data never clips top)
+    const scaledMaxVal = axisMax;
 
     // ── Single-point special case ──────────────────────────────────────────────
     // When there's only one data point the line has no direction, so we render
     // a centered dot + full-width dashed horizontal reference line instead.
     if (n === 1) {
       const cx = padL + chartW / 2;
-      const cy = getYFn(counts[0], maxVal, padT, chartH);
+      const cy = getYFn(counts[0], scaledMaxVal, padT, chartH);
 
       // Gradient fill under the horizontal line
       const grad1 = ctx.createLinearGradient(0, padT, 0, padT + chartH);
@@ -176,7 +194,7 @@ export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
     // ── Multi-point path ───────────────────────────────────────────────────────
     const stepX = chartW / (n - 1);
     const getX = (i: number) => padL + i * stepX;
-    const getY = (v: number) => getYFn(v, maxVal, padT, chartH);
+    const getY = (v: number) => getYFn(v, scaledMaxVal, padT, chartH);
 
     // Gradient fill
     const grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
