@@ -139,120 +139,69 @@ export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
       ctx.fillText(String(tick), padL - 6, y + 3.5);
     }
 
-    // Override maxVal used for Y-scaling to use axisMax (so data never clips top)
+    // Override maxVal used for Y-scaling to use axisMax (so bars never clip top)
     const scaledMaxVal = axisMax;
 
-    // ── Single-point special case ──────────────────────────────────────────────
-    // When there's only one data point the line has no direction, so we render
-    // a centered dot + full-width dashed horizontal reference line instead.
-    if (n === 1) {
-      const cx = padL + chartW / 2;
-      const cy = getYFn(counts[0], scaledMaxVal, padT, chartH);
+    // ── Bar chart ─────────────────────────────────────────────────────────────
+    // Each hourly slot = one bar. Active hours glow green; empty hours show a
+    // faint baseline stub so the time axis is still readable.
+    const barGap = Math.max(1, Math.floor(chartW / n * 0.18)); // ~18% gap between bars
+    const barW   = Math.max(2, Math.floor(chartW / n) - barGap);
+    const baseY  = padT + chartH; // bottom of chart area
+    const radius = Math.min(3, barW / 2); // rounded bar top
 
-      // Gradient fill under the horizontal line
-      const grad1 = ctx.createLinearGradient(0, padT, 0, padT + chartH);
-      grad1.addColorStop(0, 'rgba(52, 211, 153, 0.3)');
-      grad1.addColorStop(1, 'rgba(52, 211, 153, 0.01)');
-      ctx.fillStyle = grad1;
-      ctx.fillRect(padL, cy, chartW, padT + chartH - cy);
+    const barGrad = ctx.createLinearGradient(0, padT, 0, baseY);
+    barGrad.addColorStop(0, 'rgba(52, 211, 153, 0.95)');
+    barGrad.addColorStop(1, 'rgba(52, 211, 153, 0.35)');
 
-      // Dashed horizontal line at the data value
-      ctx.setLineDash([6, 4]);
-      ctx.strokeStyle = '#34d399';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(padL, cy);
-      ctx.lineTo(padL + chartW, cy);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Dot with glow
-      ctx.shadowColor = '#34d399';
-      ctx.shadowBlur = 10;
-      ctx.fillStyle = '#34d399';
-      ctx.beginPath();
-      ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowBlur = 0;
-
-      // White inner dot
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(cx, cy, 2, 0, Math.PI * 2);
-      ctx.fill();
-
-      // X-axis label centred
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
-      ctx.font = '10px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      const date = new Date(series[0].hour);
-      const label = date.toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit' });
-      ctx.fillText(label, cx, padT + chartH + 20);
-      return;
-    }
-
-    // ── Multi-point path ───────────────────────────────────────────────────────
-    const stepX = chartW / (n - 1);
-    const getX = (i: number) => padL + i * stepX;
-    const getY = (v: number) => getYFn(v, scaledMaxVal, padT, chartH);
-
-    // Gradient fill
-    const grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
-    grad.addColorStop(0, 'rgba(52, 211, 153, 0.55)');
-    grad.addColorStop(1, 'rgba(52, 211, 153, 0.02)');
-
-    ctx.beginPath();
-    ctx.moveTo(getX(0), getY(counts[0]));
-    for (let i = 1; i < n; i++) {
-      const cpx = (getX(i - 1) + getX(i)) / 2;
-      ctx.bezierCurveTo(cpx, getY(counts[i - 1]), cpx, getY(counts[i]), getX(i), getY(counts[i]));
-    }
-    ctx.lineTo(getX(n - 1), padT + chartH);
-    ctx.lineTo(getX(0), padT + chartH);
-    ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // Line stroke
-    ctx.beginPath();
-    ctx.moveTo(getX(0), getY(counts[0]));
-    for (let i = 1; i < n; i++) {
-      const cpx = (getX(i - 1) + getX(i)) / 2;
-      ctx.bezierCurveTo(cpx, getY(counts[i - 1]), cpx, getY(counts[i]), getX(i), getY(counts[i]));
-    }
-    ctx.strokeStyle = '#34d399';
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
-
-    // Data point dots with glow on hover-worthy points
     for (let i = 0; i < n; i++) {
+      const count = counts[i];
+      const x = padL + i * (chartW / n) + barGap / 2;
+
+      if (count === 0) {
+        // Draw a 2px faint stub so empty slots are visible
+        ctx.fillStyle = 'rgba(255,255,255,0.07)';
+        ctx.fillRect(x, baseY - 2, barW, 2);
+        continue;
+      }
+
+      const barH = Math.max(4, (count / scaledMaxVal) * chartH);
+      const y    = baseY - barH;
+
+      // Glow on active bars
       ctx.shadowColor = '#34d399';
-      ctx.shadowBlur = 6;
-      ctx.fillStyle = '#34d399';
+      ctx.shadowBlur  = 8;
+
+      // Rounded-top bar via path
       ctx.beginPath();
-      ctx.arc(getX(i), getY(counts[i]), 3.5, 0, Math.PI * 2);
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + barW - radius, y);
+      ctx.quadraticCurveTo(x + barW, y, x + barW, y + radius);
+      ctx.lineTo(x + barW, baseY);
+      ctx.lineTo(x, baseY);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      ctx.fillStyle = barGrad;
       ctx.fill();
       ctx.shadowBlur = 0;
-
-      // White inner dot for contrast
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(getX(i), getY(counts[i]), 1.5, 0, Math.PI * 2);
-      ctx.fill();
     }
 
-    // X-axis labels
+    // ── X-axis labels ─────────────────────────────────────────────────────────
     ctx.fillStyle = 'rgba(255,255,255,0.45)';
     ctx.font = '10px Inter, sans-serif';
     ctx.textAlign = 'center';
+
+    // Pick ~5 evenly-spaced label positions
     const labelIndices = n <= 6
       ? Array.from({ length: n }, (_, i) => i)
       : [0, Math.floor(n / 4), Math.floor(n / 2), Math.floor(3 * n / 4), n - 1];
 
     for (const idx of labelIndices) {
-      const date = new Date(series[idx].hour);
+      const barCx = padL + idx * (chartW / n) + barGap / 2 + barW / 2;
+      const date  = new Date(series[idx].hour);
       const label = date.toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit' });
-      ctx.fillText(label, getX(idx), padT + chartH + 20);
+      ctx.fillText(label, barCx, baseY + 20);
     }
   }
 
