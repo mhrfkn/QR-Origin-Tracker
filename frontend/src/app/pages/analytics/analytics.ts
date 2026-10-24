@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ElementRef, ViewChild, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BatchService } from '../../core/batch.service';
 import { ScanAnalytics } from '../../core/models';
@@ -9,7 +9,7 @@ import { ScanAnalytics } from '../../core/models';
   templateUrl: './analytics.html',
   styleUrl: './analytics.css'
 })
-export class Analytics implements OnInit, AfterViewInit {
+export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
   private readonly route = inject(ActivatedRoute);
   private readonly batchesApi = inject(BatchService);
 
@@ -20,8 +20,8 @@ export class Analytics implements OnInit, AfterViewInit {
   readonly loading = signal(true);
   batchId = '';
 
-  private canvasReady = false;
   private dataReady = false;
+  private chartDrawn = false;
 
   ngOnInit() {
     this.batchId = this.route.snapshot.paramMap.get('batchId') ?? '';
@@ -35,7 +35,8 @@ export class Analytics implements OnInit, AfterViewInit {
         this.analytics.set(data);
         this.loading.set(false);
         this.dataReady = true;
-        this.maybeDrawChart();
+        // Reset so AfterViewChecked will attempt a draw once canvas is in DOM
+        this.chartDrawn = false;
       },
       error: () => {
         this.loading.set(false);
@@ -45,15 +46,24 @@ export class Analytics implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.canvasReady = true;
+    // Canvas may not exist yet (inside @if block), handled by ngAfterViewChecked
+    this.maybeDrawChart();
+  }
+
+  ngAfterViewChecked() {
+    // Called after every change-detection cycle — draw once canvas is in the DOM
     this.maybeDrawChart();
   }
 
   private maybeDrawChart() {
-    if (!this.canvasReady || !this.dataReady) return;
+    if (this.chartDrawn || !this.dataReady) return;
+    const canvas = this.canvasRef?.nativeElement;
+    if (!canvas) return;
     const data = this.analytics();
     if (!data || data.hourlySeries.length === 0) return;
-    setTimeout(() => this.drawTimeline(data.hourlySeries), 0);
+    this.chartDrawn = true;
+    // Use rAF to ensure the canvas has been laid out and has non-zero dimensions
+    requestAnimationFrame(() => this.drawTimeline(data.hourlySeries));
   }
 
   private drawTimeline(series: { hour: string; count: number }[]) {
@@ -63,8 +73,17 @@ export class Analytics implements OnInit, AfterViewInit {
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
-    const W = canvas.clientWidth;
-    const H = canvas.clientHeight;
+    // Use offsetWidth/offsetHeight as fallback if clientWidth is 0
+    const W = canvas.clientWidth || canvas.offsetWidth || 760;
+    const H = canvas.clientHeight || canvas.offsetHeight || 220;
+
+    if (W === 0 || H === 0) {
+      // Canvas not yet laid out — retry on next frame
+      this.chartDrawn = false;
+      requestAnimationFrame(() => this.drawTimeline(series));
+      return;
+    }
+
     canvas.width = W * dpr;
     canvas.height = H * dpr;
     ctx.scale(dpr, dpr);

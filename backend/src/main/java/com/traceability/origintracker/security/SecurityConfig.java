@@ -68,9 +68,10 @@ public class SecurityConfig {
                                 csp.policyDirectives(
                                         "default-src 'self'; " +
                                         "script-src 'self' 'unsafe-inline'; " +
-                                        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+                                        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; " +
                                         "font-src 'self' https://fonts.gstatic.com; " +
-                                        "img-src 'self' data: blob:; " +
+                                        "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://unpkg.com; " +
+                                        "connect-src 'self'; " +
                                         "frame-ancestors 'none'"
                                 )
                         )

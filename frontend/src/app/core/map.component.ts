@@ -120,28 +120,51 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private async geocode(query: string) {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
     try {
-      const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
-      const data: GeocodeResult[] = await res.json();
-      const first = data?.[0];
-      if (!first) throw new Error('no results');
-      const { lat, lon } = first;
-      this.coords = [parseFloat(lat), parseFloat(lon)];
+      // Call our backend proxy which sets the required User-Agent for Nominatim.
+      // Browsers cannot set User-Agent themselves (it's a forbidden header name),
+      // so direct browser→Nominatim calls fail silently.
+      const apiBase = (typeof window !== 'undefined' && (window as any).__BACKEND_API_URL__)
+        ? (window as any).__BACKEND_API_URL__
+        : '';
+      const url = `${apiBase}/api/public/geocode/search?q=${encodeURIComponent(query)}`;
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+
+      if (res.status === 204 || res.status === 404) {
+        throw new Error('no results');
+      }
+      if (!res.ok) {
+        throw new Error(`geocode error: ${res.status}`);
+      }
+
+      const result = await res.json() as { lat: string; lon: string };
+      if (!result?.lat || !result?.lon) throw new Error('invalid geocode response');
+
+      this.coords = [parseFloat(result.lat), parseFloat(result.lon)];
       this.geocoding = false;
-      // Force Angular to render the #mapEl div that @if just toggled on,
-      // then init the map on the next microtask so the DOM is fully painted.
+      this.failed = false;
+      // Trigger change detection so Angular renders the #mapEl div (inside @if),
+      // then schedule map init for after the DOM is painted.
       this.cdr.detectChanges();
-      setTimeout(() => {
-        if (this.mapEl) {
-          this.initMap(this.coords!);
-        }
-      }, 0);
-    } catch {
+      // Use rAF + setTimeout to guarantee the div is in the DOM and has layout
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (this.mapEl?.nativeElement) {
+            this.initMap(this.coords!);
+          } else {
+            // ViewChild not resolved yet — trigger another detectChanges cycle
+            this.cdr.detectChanges();
+            setTimeout(() => this.mapEl?.nativeElement && this.initMap(this.coords!), 50);
+          }
+        }, 0);
+      });
+    } catch (err) {
       this.geocoding = false;
       this.failed = true;
+      this.cdr.detectChanges();
     }
   }
+
 
   private initMap(coords: [number, number]) {
     if (!this.mapEl) return;
