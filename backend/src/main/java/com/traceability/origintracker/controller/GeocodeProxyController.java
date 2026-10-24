@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,8 +78,11 @@ public class GeocodeProxyController {
                 if (response.statusCode() == 200) {
                     JsonNode arr = objectMapper.readTree(response.body());
                     if (arr.isArray() && arr.size() > 0) {
-                        // Return first hit
-                        return ResponseEntity.ok(arr.get(0));
+                        // Return raw JSON string to avoid Jackson re-serializing JsonNode metadata
+                        String json = arr.get(0).toString();
+                        return ResponseEntity.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(json);
                     }
                 }
 
