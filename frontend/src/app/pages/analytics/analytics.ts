@@ -143,36 +143,42 @@ export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
     const scaledMaxVal = axisMax;
 
     // ── Bar chart ─────────────────────────────────────────────────────────────
-    // Each hourly slot = one bar. Active hours glow green; empty hours show a
-    // faint baseline stub so the time axis is still readable.
-    const barGap = Math.max(1, Math.floor(chartW / n * 0.18)); // ~18% gap between bars
-    const barW   = Math.max(2, Math.floor(chartW / n) - barGap);
-    const baseY  = padT + chartH; // bottom of chart area
-    const radius = Math.min(3, barW / 2); // rounded bar top
+    // Each hourly slot = one bar. Active hours glow bright green with a count
+    // label above; empty hours show a subtle tinted stub for visual rhythm.
+    const slotW  = chartW / n;
+    const barGap = Math.max(1, Math.floor(slotW * 0.2));
+    const barW   = Math.max(3, Math.floor(slotW) - barGap);
+    const baseY  = padT + chartH;
+    const radius = Math.min(4, barW / 2);
 
+    // Active bar: vivid top → semi-transparent bottom
     const barGrad = ctx.createLinearGradient(0, padT, 0, baseY);
-    barGrad.addColorStop(0, 'rgba(52, 211, 153, 0.95)');
-    barGrad.addColorStop(1, 'rgba(52, 211, 153, 0.35)');
+    barGrad.addColorStop(0, '#34d399');
+    barGrad.addColorStop(1, 'rgba(52, 211, 153, 0.25)');
 
     for (let i = 0; i < n; i++) {
       const count = counts[i];
-      const x = padL + i * (chartW / n) + barGap / 2;
+      const x = padL + i * slotW + barGap / 2;
+      const cx = x + barW / 2; // horizontal centre of this bar slot
 
       if (count === 0) {
-        // Draw a 2px faint stub so empty slots are visible
-        ctx.fillStyle = 'rgba(255,255,255,0.07)';
-        ctx.fillRect(x, baseY - 2, barW, 2);
+        // Subtle tick so the time-scale reads clearly
+        ctx.fillStyle = 'rgba(255,255,255,0.10)';
+        ctx.fillRect(x, baseY - 3, barW, 3);
         continue;
       }
 
-      const barH = Math.max(4, (count / scaledMaxVal) * chartH);
+      // Enforce a tall minimum so even 1 scan is clearly visible:
+      // at least 30% of chart height, or the proportional height — whichever is greater.
+      const proportional = (count / scaledMaxVal) * chartH;
+      const barH = Math.max(chartH * 0.30, proportional);
       const y    = baseY - barH;
 
-      // Glow on active bars
+      // ── Multi-layer glow for impact ──
       ctx.shadowColor = '#34d399';
-      ctx.shadowBlur  = 8;
+      ctx.shadowBlur  = 18;
 
-      // Rounded-top bar via path
+      // Rounded-top bar
       ctx.beginPath();
       ctx.moveTo(x + radius, y);
       ctx.lineTo(x + barW - radius, y);
@@ -184,7 +190,21 @@ export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
       ctx.closePath();
       ctx.fillStyle = barGrad;
       ctx.fill();
-      ctx.shadowBlur = 0;
+
+      // Extra glow pass — draw a wider blurred bar on top for the halo effect
+      ctx.shadowBlur = 28;
+      ctx.globalAlpha = 0.35;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur  = 0;
+
+      // ── Count label above bar ──
+      ctx.fillStyle   = '#34d399';
+      ctx.font        = `bold ${Math.max(10, Math.min(13, barW))}px Inter, sans-serif`;
+      ctx.textAlign   = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(String(count), cx, y - 4);
+      ctx.textBaseline = 'alphabetic';
     }
 
     // ── X-axis labels ─────────────────────────────────────────────────────────
@@ -192,13 +212,12 @@ export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
     ctx.font = '10px Inter, sans-serif';
     ctx.textAlign = 'center';
 
-    // Pick ~5 evenly-spaced label positions
     const labelIndices = n <= 6
       ? Array.from({ length: n }, (_, i) => i)
       : [0, Math.floor(n / 4), Math.floor(n / 2), Math.floor(3 * n / 4), n - 1];
 
     for (const idx of labelIndices) {
-      const barCx = padL + idx * (chartW / n) + barGap / 2 + barW / 2;
+      const barCx = padL + idx * slotW + barGap / 2 + barW / 2;
       const date  = new Date(series[idx].hour);
       const label = date.toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit' });
       ctx.fillText(label, barCx, baseY + 20);
