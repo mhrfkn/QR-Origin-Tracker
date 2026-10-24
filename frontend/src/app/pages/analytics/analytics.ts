@@ -92,7 +92,11 @@ export class Analytics implements OnInit, AfterViewInit, AfterViewChecked {
     // The backend only returns hours that had scans. Fill in every hourly slot
     // between the first and last scan so the chart shows a proper time-series
     // with valleys at zero instead of only the active hours.
-    const countMap = new Map(series.map(s => [s.hour, s.count]));
+    // Normalize keys: backend may omit milliseconds ("...T17:00:00Z") while
+    // toISOString() always emits them ("...T17:00:00.000Z"). Run both through
+    // new Date() → toISOString() so the format is always identical.
+    const toKey = (iso: string) => new Date(iso).toISOString().slice(0, 13) + ':00:00.000Z';
+    const countMap = new Map(series.map(s => [toKey(s.hour), s.count]));
     const startHour = new Date(series[0].hour);
     const endHour   = new Date(series[series.length - 1].hour);
     const filled: { hour: string; count: number }[] = [];
