@@ -1,14 +1,18 @@
+# Java / Spring Boot
 HELP.md
 target/
 backend/target/
-frontend/node_modules/
-frontend/node/
-frontend/dist/
-frontend/.angular/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Node / Angular
+frontend/node_modules/
+frontend/node/
+frontend/dist/
+frontend/.angular/
+
+# IDE / Editor
 .idea
 *.iws
 *.iml
@@ -16,5 +20,35 @@ frontend/.angular/
 .vscode/
 .DS_Store
 
-# Tunnel log files
+# Logs
 *.log
+
+# Python / Environment (College Template)
+__pycache__/
+*.py[codz]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.env
+.envrc
+.venv
+# Local Report
+MCA_Report_Overleaf.zip
+MCA 2025  Mini Project Report Template/
